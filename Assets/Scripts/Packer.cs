@@ -38,10 +38,6 @@ namespace Chaos
         public void Fit(Block[] blocks, out int width, out int height)
         {
             int len = blocks.Length;
-            if (null == blocks || 0 == len)
-            {
-                throw new Exception("Array underflow");
-            }
             int w = _root.w = blocks[0].w;
             int h = _root.h = blocks[0].h;
             for (int n = 0; n < len; n++)
@@ -70,12 +66,15 @@ namespace Chaos
         {
             if (root.used)
             {
-                Node ret = FindNode(root.right, w, h);
-                if (ret == null)
+                if (w <= root.w)
                 {
-                    ret = FindNode(root.down, w, h);
+                    return FindNode(root.right, w, h);
                 }
-                return ret;
+                if (h <= root.h)
+                {
+                    return FindNode(root.down, w, h);
+                }
+                return null;
             }
             if (w <= root.w && h <= root.h)
             {
@@ -103,7 +102,7 @@ namespace Chaos
             {
                 return GrowDown(w, h);
             }
-            if (canGrowRight)
+            if (canGrowRight) 
             {
                 return GrowRight(w, h);
             }
@@ -118,8 +117,6 @@ namespace Chaos
         {
             _root = new Node(){
                 used = true,
-                x = 0,
-                y = 0,
                 w = _root.w + w,
                 h = _root.h,
                 down = _root,
@@ -132,8 +129,6 @@ namespace Chaos
         {
             _root = new Node(){
                 used = true,
-                x = 0,
-                y = 0,
                 w = _root.w,
                 h = _root.h + h,
                 right = _root,
