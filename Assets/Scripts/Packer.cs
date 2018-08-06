@@ -66,15 +66,12 @@ namespace Chaos
         {
             if (root.used)
             {
-                if (w <= root.w)
+                Node ret = FindNode(root.right, w, h);
+                if (ret == null)
                 {
-                    return FindNode(root.right, w, h);
+                    ret = FindNode(root.down, w, h);
                 }
-                if (h <= root.h)
-                {
-                    return FindNode(root.down, w, h);
-                }
-                return null;
+                return ret;
             }
             if (w <= root.w && h <= root.h)
             {
