@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Chaos;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public static class PackTextures
 {
@@ -41,7 +42,6 @@ public static class PackTextures
     {
         int width;
         int height;
-
         Packer.Block[] blocks = ComputePack(textures, out width, out height);
 
         if (width < height)
@@ -119,10 +119,10 @@ public static class PackTextures
             blocks[i] = new Packer.Block() {w = tex.width, h = tex.height, x = 0, y = 0, i = i,};
         }
         Array.Sort(blocks, new BlockComparer());
-
+        
         Packer packer = new Packer();
         packer.Fit(blocks, out width, out height);
-        
+
         return blocks;
     }
 }

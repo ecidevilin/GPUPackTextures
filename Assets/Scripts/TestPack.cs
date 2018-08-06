@@ -24,7 +24,7 @@ public class TestPack : MonoBehaviour
             Rect[] rects = Packed.PackTextures(textures, 0);
             Profiler.EndSample();
             Profiler.BeginSample("Compute");
-            rects = PackTextures.PackTexturesCompute(out Compute, textures, 1024);
+            rects = PackTextures.PackTexturesCompute(out Compute, textures);
             Profiler.EndSample();
             for (int i = 0, imax = rects.Length; i < imax; i++)
             {

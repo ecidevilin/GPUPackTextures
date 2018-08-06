@@ -15,7 +15,7 @@ namespace Chaos
 
             public static Block operator *(Block b, float f)
             {
-                b.x = (int) (b.x*f);
+                b.x = (int)(b.x * f);
                 b.y = (int)(b.y * f);
                 b.w = (int)(b.w * f);
                 b.h = (int)(b.h * f);
@@ -42,8 +42,8 @@ namespace Chaos
             {
                 throw new Exception("Array underflow");
             }
-            width = _root.w = blocks[0].w;
-            height = _root.h = blocks[0].h;
+            int w = _root.w = blocks[0].w;
+            int h = _root.h = blocks[0].h;
             for (int n = 0; n < len; n++)
             {
                 Block block = blocks[n];
@@ -59,16 +59,23 @@ namespace Chaos
                 block.x = node.x;
                 block.y = node.y;
                 blocks[n] = block;
-                width = Math.Max(width, block.x + block.w);
-                height = Math.Max(height, block.y + block.h);
+                w = Math.Max(w, block.x + block.w);
+                h = Math.Max(h, block.y + block.h);
             }
+            width = w;
+            height = h;
         }
 
         private Node FindNode(Node root, int w, int h)
         {
             if (root.used)
             {
-                return FindNode(root.right, w, h) ?? FindNode(root.down, w, h);
+                Node ret = FindNode(root.right, w, h);
+                if (ret == null)
+                {
+                    ret = FindNode(root.down, w, h);
+                }
+                return ret;
             }
             if (w <= root.w && h <= root.h)
             {
@@ -118,8 +125,8 @@ namespace Chaos
                 down = _root,
                 right = new Node() { x = _root.w, y = 0, w = w, h = _root.h },
             };
-            Node node = FindNode(_root, w, h);
-            return node == null ? null : SplitNode(node, w, h);
+            Node node = _root.right;//FindNode(_root, w, h);
+            return /*node == null ? null : */SplitNode(node, w, h);
         }
         private Node GrowDown(int w, int h)
         {
@@ -132,8 +139,8 @@ namespace Chaos
                 right = _root,
                 down = new Node(){ x = 0, y = _root.h, w = _root.w, h = h },
             };
-            Node node = FindNode(_root, w, h);
-            return node == null ? null : SplitNode(node, w, h);
+            Node node = _root.down;//FindNode(_root, w, h);
+            return /*node == null ? null : */SplitNode(node, w, h);
         }
     }
 }
