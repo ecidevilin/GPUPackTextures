@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Chaos;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Jobs;
 using UnityEngine;
 
 public static class PackTextures
@@ -16,6 +12,11 @@ public static class PackTextures
     {
         _computeShader = Resources.Load<ComputeShader>("PackTextures");
         _kernelId = _computeShader.FindKernel("PackTextures");
+    }
+
+    public static void UnloadComputeShader()
+    {
+        Resources.UnloadAsset(_computeShader);
     }
 
     private static int PowerOfTwo(int n)
@@ -36,7 +37,7 @@ public static class PackTextures
         return n;
     }
 
-    public unsafe static Rect[] PackTexturesCompute(out Texture result, Texture2D[] textures, int maximumAtlasSize = 2048, bool makeNoLongerReadable = false)
+    public unsafe static Rect[] PackTexturesCompute(out Texture result, Texture2D[] textures, int maximumAtlasSize = 2048)
     {
         int width;
         int height;
@@ -54,18 +55,16 @@ public static class PackTextures
             scale = (float)maximumAtlasSize/width;
             width = maximumAtlasSize;
             height = (int) (height*scale);
-            height = PowerOfTwo(height);
         }
-        else
-        {
-            width = PowerOfTwo(width);
-            height = PowerOfTwo(height);
-        }
+        width = PowerOfTwo(width);
+        height = PowerOfTwo(height);
 
-        RenderTexture rt = new RenderTexture(width, height, 0);
-        rt.enableRandomWrite = true;
-        rt.useMipMap = true;
-        rt.autoGenerateMips = false;
+        RenderTexture rt = new RenderTexture(width, height, 0)
+        {
+            enableRandomWrite = true,
+            useMipMap = true,
+            autoGenerateMips = false
+        };
         rt.Create();
 
         ComputeShader cs = _computeShader;
@@ -97,8 +96,6 @@ public static class PackTextures
         //UnityEngine.Profiling.Profiler.EndSample();
         //RenderTexture.active = tmp;
 
-
-        Resources.UnloadAsset(cs);
 
         return ret;
     }

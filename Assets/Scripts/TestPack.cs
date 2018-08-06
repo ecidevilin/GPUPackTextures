@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Profiling;
 
 public class TestPack : MonoBehaviour
@@ -27,7 +24,7 @@ public class TestPack : MonoBehaviour
             Rect[] rects = Packed.PackTextures(textures, 0);
             Profiler.EndSample();
             Profiler.BeginSample("Compute");
-            rects = PackTextures.PackTexturesCompute(out Compute, textures);
+            rects = PackTextures.PackTexturesCompute(out Compute, textures, 1024);
             Profiler.EndSample();
             for (int i = 0, imax = rects.Length; i < imax; i++)
             {
